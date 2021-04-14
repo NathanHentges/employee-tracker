@@ -1,6 +1,8 @@
+/* eslint-disable no-use-before-define */
 
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+// eslint-disable-next-line no-unused-vars
 const cTable = require('console.table');
 
 const connection = mysql.createConnection({
@@ -58,11 +60,11 @@ const start = () => {
 };
 
 
-const addDepartment = () => {};
+const addDepartment = () => { };
 
-const addRole = () => {};
+const addRole = () => { };
 
-const addEmployee = () => {};
+const addEmployee = () => { };
 
 const viewDepartments = () => {
   const query = 'SELECT * FROM department';
@@ -72,11 +74,39 @@ const viewDepartments = () => {
   });
 };
 
-const viewRoles = () => {};
+const viewRoles = () => {
+  const query = 'SELECT r.id, r.title, r.salary, d.name department FROM role r INNER JOIN department d ON r.department_id = d.id;';
+  connection.query(query, (err, results) => {
+    console.table(results);
+    start();
+  });
+};
 
-const viewEmployees = () => {};
+const viewEmployees = () => {
+  const query = `SELECT 
+  e.id,
+  e.first_name "first name",
+  e.last_name "last name",
+  r.title,
+  d.name department,
+  r.salary,
+  CONCAT(m.first_name," ",m.last_name) manager
+  
+FROM employee e
+INNER JOIN role r
+ON e.role_id = r.id
+LEFT JOIN employee m
+ON e.manager_id = m.id
+INNER JOIN department d
+ON r.department_id = d.id;`;
+  connection.query(query, (err, results) => {
+    if (err) throw err;
+    console.table(results);
+    start();
+  });
+};
 
-const updateRoles = () => {};
+const updateRoles = () => { };
 
 
 connection.connect((err) => {
